@@ -1,4 +1,4 @@
-package _4.NovemberRecipeMarket.domain.dto;
+package _4.NovemberRecipeMarket.domain.dto.user;
 
 public class UserDeleteResponse {
     private Long id;

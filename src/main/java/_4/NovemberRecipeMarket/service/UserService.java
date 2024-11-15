@@ -1,7 +1,7 @@
 package _4.NovemberRecipeMarket.service;
 
 import _4.NovemberRecipeMarket.domain.UserRole;
-import _4.NovemberRecipeMarket.domain.dto.*;
+import _4.NovemberRecipeMarket.domain.dto.user.*;
 import _4.NovemberRecipeMarket.domain.entity.User;
 import _4.NovemberRecipeMarket.exception.AppException;
 import _4.NovemberRecipeMarket.exception.ErrorCode;
@@ -67,7 +67,7 @@ public class UserService {
             throw new AppException(ErrorCode.INVALID_PASSWORD);
         }
 
-        return JwtTokenUtils.createToken(username, secretKey, "USER", expiredTimeMs);
+        return JwtTokenUtils.createToken(username,"USER", secretKey, expiredTimeMs);
     }
 
     // update user
@@ -79,7 +79,7 @@ public class UserService {
 
         // email로 찾은 유저가 로그인 한 유저면 에외 발생시키지 않도록 하기
         userRepository.findByEmail(updateRequest.getEmail())
-                .filter(existingUser -> !existingUser.getId().equals(user.getId()))
+                .filter(existingUser -> existingUser.getId() != user.getId())
                 .ifPresent(duplicateUser -> {
                     throw new AppException(ErrorCode.DUPLICATE_EMAIL);
                 });
@@ -92,8 +92,6 @@ public class UserService {
         user.updateUser(encoder.encode(updateRequest.getPassword()),
                 updateRequest.getName(), updateRequest.getAddress(), updateRequest.getEmail(),
                 updateRequest.getPhoneNumber(), updateRequest.getBirthDate());
-
-        userRepository.save(user);
 
         return toUserResponse(user);
     }

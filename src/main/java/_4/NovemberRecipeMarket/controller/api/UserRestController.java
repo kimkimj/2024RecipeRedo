@@ -1,6 +1,7 @@
 package _4.NovemberRecipeMarket.controller.api;
 
 import _4.NovemberRecipeMarket.domain.dto.*;
+import _4.NovemberRecipeMarket.domain.dto.user.*;
 import _4.NovemberRecipeMarket.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -44,7 +45,7 @@ public class UserRestController {
     }
 
     // 마이페이지 - 회원 정보 조회
-    @PutMapping("/my/{id}")
+    @GetMapping("/my/{id}")
     public Response<UserResponse> findMyPage(@PathVariable Long id) {
         UserResponse response = userService.findMyPage(id);
         return Response.success(response);

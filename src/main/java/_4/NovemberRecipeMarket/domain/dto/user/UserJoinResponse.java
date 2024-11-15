@@ -1,4 +1,4 @@
-package _4.NovemberRecipeMarket.domain.dto;
+package _4.NovemberRecipeMarket.domain.dto.user;
 
 
 import lombok.AllArgsConstructor;
@@ -14,6 +14,6 @@ public class UserJoinResponse {
 
     public UserJoinResponse(String username) {
         this.username = username;
-        message = username + "의  회원가입이 완료되었습니다.";
+        message = username + "의 회원가입이 완료되었습니다.";
     }
 }

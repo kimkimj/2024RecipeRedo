@@ -1,9 +1,8 @@
 package _4.NovemberRecipeMarket.controller.ui;
 
-import _4.NovemberRecipeMarket.domain.dto.UserJoinRequest;
-import _4.NovemberRecipeMarket.domain.dto.UserJoinResponse;
-import _4.NovemberRecipeMarket.domain.dto.UserLoginRequest;
-import _4.NovemberRecipeMarket.domain.dto.UserResponse;
+import _4.NovemberRecipeMarket.domain.dto.user.UserJoinRequest;
+import _4.NovemberRecipeMarket.domain.dto.user.UserLoginRequest;
+import _4.NovemberRecipeMarket.domain.dto.user.UserResponse;
 import _4.NovemberRecipeMarket.exception.AppException;
 import _4.NovemberRecipeMarket.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;

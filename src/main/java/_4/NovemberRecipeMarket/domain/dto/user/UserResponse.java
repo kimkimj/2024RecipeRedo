@@ -1,4 +1,4 @@
-package _4.NovemberRecipeMarket.domain.dto;
+package _4.NovemberRecipeMarket.domain.dto.user;
 
 import _4.NovemberRecipeMarket.domain.UserRole;
 import lombok.AllArgsConstructor;
