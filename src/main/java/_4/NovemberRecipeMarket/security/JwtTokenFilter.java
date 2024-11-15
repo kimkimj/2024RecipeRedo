@@ -1,9 +1,9 @@
 package _4.NovemberRecipeMarket.security;
 
-import _4.NovemberRecipeMarket.domain.dto.UserResponse;
+import _4.NovemberRecipeMarket.domain.dto.seller.SellerResponse;
+import _4.NovemberRecipeMarket.domain.dto.user.UserResponse;
+import _4.NovemberRecipeMarket.service.SellerService;
 import _4.NovemberRecipeMarket.service.UserService;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +27,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private final String secretKey;
     private final JwtTokenUtils jwtTokenUtils;
     private final UserService userService;
+    private final SellerService sellerService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -38,23 +38,33 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             for (Cookie cookie: cookies) {
                 if (cookie.getName().equals("token")) {
                     token = cookie.getValue();
+                    log.info("token retrieved");
                 }
             }
         } catch (Exception e) {
+            log.error("error found");
             filterChain.doFilter(request, response);
             return;
         }
 
         if (token == null || token.equals("deleted")) {
             filterChain.doFilter(request, response);
+            log.info("token deleted");
             return;
         }
 
+        log.info("token valid");
         String username = jwtTokenUtils.getUsername(token, secretKey);
-        UserResponse user = userService.getUserByUsername(username);
+        String userRole = jwtTokenUtils.getUserRole(token, secretKey);
+
+        if (userRole.equals("USER")) {
+            UserResponse user = userService.getUserByUsername(username);
+        } else if (userRole.equals("SELLER")) {
+            SellerResponse sellerResponse = sellerService.getSellerByUsername(username);
+        }
 
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(username, null, List.of(new SimpleGrantedAuthority(user.getUserRole().getValue())));
+                new UsernamePasswordAuthenticationToken(username, null, List.of(new SimpleGrantedAuthority(userRole)));
 
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);

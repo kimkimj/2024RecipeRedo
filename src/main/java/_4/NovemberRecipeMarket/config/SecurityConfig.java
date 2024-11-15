@@ -5,6 +5,7 @@ import _4.NovemberRecipeMarket.exception.ErrorCode;
 import _4.NovemberRecipeMarket.security.JwtExceptionFilter;
 import _4.NovemberRecipeMarket.security.JwtTokenFilter;
 import _4.NovemberRecipeMarket.security.JwtTokenUtils;
+import _4.NovemberRecipeMarket.service.SellerService;
 import _4.NovemberRecipeMarket.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -36,22 +37,28 @@ public class SecurityConfig {
 
     private final JwtTokenUtils jwtTokenUtils;
     private final UserService userService;
+    private final SellerService sellerService;
 
     private final String[] POST_PERMIT = {
             "/api/v1/users/join",
             "/api/v1/users/login",
+            "/api/v1/seller/login",
+            "/api/v1/seller/join",
 
             // ui
             "/login",
             "/join",
             "/users/join",
-            "/users/login"
+            "/users/login",
+            "/seller/join",
+            "/seller/login"
     };
 
     private final String[] GET_AUTHENTICATED ={
             "/users/my",
             "users/my/**",
-            "/users/logout"
+            "/users/logout",
+            "/seller/my/**"
     };
 
     @Bean
@@ -76,7 +83,7 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         httpSecurity
-                .addFilterBefore(new JwtTokenFilter(secretKey, jwtTokenUtils, userService),
+                .addFilterBefore(new JwtTokenFilter(secretKey, jwtTokenUtils, userService, sellerService),
                         UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(), JwtTokenFilter.class);
 
@@ -106,7 +113,7 @@ public class SecurityConfig {
         response.setStatus(errorCode.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(response.getWriter(), Response.error(ErrorCode.INVALID_PERMISSION.getMessage()));
+        objectMapper.writeValue(response.getWriter(), Response.error(errorCode.getMessage()));
     }
 
 }

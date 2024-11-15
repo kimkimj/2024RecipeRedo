@@ -3,10 +3,8 @@ package _4.NovemberRecipeMarket.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
 import java.util.Date;
 
 @Component
@@ -32,14 +30,11 @@ public class JwtTokenUtils  {
         claims.put("username", username);
         claims.put("role", userRole);
 
-        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiredTimeMs))
-                //.signWith(SignatureAlgorithm.HS256, secretKey)
-                .signWith(key)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 }
