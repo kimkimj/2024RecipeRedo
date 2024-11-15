@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/seller")
+@RequestMapping("/api/v1/sellers")
 @RequiredArgsConstructor
 public class SellerRestController {
 
@@ -26,13 +26,13 @@ public class SellerRestController {
         return Response.success(sellerLoginResponse);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Response<SellerDeleteResponse> deleteSeller(@PathVariable Long id, Authentication authentication) {
         SellerDeleteResponse sellerDeleteResponse = sellerService.delete(id, authentication.getName());
         return Response.success(sellerDeleteResponse);
     }
 
-    @PostMapping("/update/{id}")
+    @PostMapping("/{id}")
     public Response<SellerResponse> updateSeller(@PathVariable Long id, Authentication authentication,
                                                 @RequestBody SellerUpdateRequest request) {
         SellerResponse sellerResponse = sellerService.update(id, authentication.getName(), request);
@@ -47,7 +47,7 @@ public class SellerRestController {
     }
 
     // 마이페이지 - 비밀번호 변경
-    @PostMapping("/{id}/updatePassword")
+    @PutMapping("/my/{id}/password")
     public Response<String> updatePassword(@PathVariable Long id, Authentication authentication,
                                            String currentPassword, String newPassword) {
         String message = sellerService.updatePassword(id, authentication.getName(), currentPassword, newPassword);
@@ -55,7 +55,7 @@ public class SellerRestController {
     }
 
     // 마이페이지 업데이트
-    @PostMapping("/my/{id}")
+    @PutMapping("/my/{id}")
     public Response<SellerResponse> updateMyPpage(@PathVariable Long id, Authentication authentication,
                                                   @RequestBody SellerUpdateRequest request) {
         SellerResponse sellerResponse = sellerService.update(id, authentication.getName(), request);
