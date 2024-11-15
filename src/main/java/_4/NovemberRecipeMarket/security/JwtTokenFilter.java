@@ -57,12 +57,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String username = jwtTokenUtils.getUsername(token, secretKey);
         String userRole = jwtTokenUtils.getUserRole(token, secretKey);
 
-        if (userRole.equals("USER")) {
-            UserResponse user = userService.getUserByUsername(username);
-        } else if (userRole.equals("SELLER")) {
-            SellerResponse sellerResponse = sellerService.getSellerByUsername(username);
-        }
-
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(username, null, List.of(new SimpleGrantedAuthority(userRole)));
 
