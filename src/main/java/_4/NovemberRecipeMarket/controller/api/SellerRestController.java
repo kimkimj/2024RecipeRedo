@@ -32,7 +32,7 @@ public class SellerRestController {
         return Response.success(sellerDeleteResponse);
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public Response<SellerResponse> updateSeller(@PathVariable Long id, Authentication authentication,
                                                 @RequestBody SellerUpdateRequest request) {
         SellerResponse sellerResponse = sellerService.update(id, authentication.getName(), request);
@@ -40,7 +40,7 @@ public class SellerRestController {
     }
 
     // 마이페이지 - 회원정보 조회
-    @GetMapping("/my/{id}")
+    @GetMapping("/{id}/profile")
     public Response<SellerResponse> findMyPage(@PathVariable Long id, Authentication authentication) {
         SellerResponse sellerResponse = sellerService.getMyPage(id, authentication.getName());
         return Response.success(sellerResponse);
@@ -55,8 +55,8 @@ public class SellerRestController {
     }
 
     // 마이페이지 업데이트
-    @PutMapping("/my/{id}")
-    public Response<SellerResponse> updateMyPpage(@PathVariable Long id, Authentication authentication,
+    @PutMapping("/{id}/profile")
+    public Response<SellerResponse> updateMyPage(@PathVariable Long id, Authentication authentication,
                                                   @RequestBody SellerUpdateRequest request) {
         SellerResponse sellerResponse = sellerService.update(id, authentication.getName(), request);
         return Response.success(sellerResponse);

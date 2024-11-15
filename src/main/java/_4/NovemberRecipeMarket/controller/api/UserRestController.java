@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserRestController {
 
@@ -28,17 +28,14 @@ public class UserRestController {
         return Response.success(new UserLoginResponse(token));
     }
 
-
-    // update
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Response<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequest request,
                                              Authentication authentication) {
         UserResponse response = userService.updateUser(request, id, authentication.getName());
         return Response.success(response);
     }
 
-    // delete
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Response<UserDeleteResponse> deleteUser(@PathVariable Long id, Authentication authentication) {
         UserDeleteResponse response = userService.deleteUser(id, authentication.getName());
         return Response.success(response);
