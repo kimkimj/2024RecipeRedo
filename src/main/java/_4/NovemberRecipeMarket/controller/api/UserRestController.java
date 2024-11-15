@@ -8,21 +8,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 public class UserRestController {
 
     private final UserService userService;
 
     //회원가입
-    @PostMapping("/users/join")
+    @PostMapping("/join")
     public Response<UserJoinResponse> join(@RequestBody UserJoinRequest userJoinRequest) {
         UserJoinResponse response = userService.join(userJoinRequest);
         return Response.success(response);
     }
 
     // 로그인
-    @PostMapping("/users/login")
+    @PostMapping("/login")
     public Response<UserLoginResponse> login(@RequestBody UserLoginRequest loginRequest) {
         String token = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
         return Response.success(new UserLoginResponse(token));
@@ -30,7 +30,7 @@ public class UserRestController {
 
 
     // update
-    @PostMapping("/users/{id}")
+    @PostMapping("/update/{id}")
     public Response<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequest request,
                                              Authentication authentication) {
         UserResponse response = userService.updateUser(request, id, authentication.getName());
@@ -38,7 +38,7 @@ public class UserRestController {
     }
 
     // delete
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/delete/{id}")
     public Response<UserDeleteResponse> deleteUser(@PathVariable Long id, Authentication authentication) {
         UserDeleteResponse response = userService.deleteUser(id, authentication.getName());
         return Response.success(response);
