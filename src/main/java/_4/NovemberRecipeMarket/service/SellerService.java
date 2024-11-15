@@ -25,7 +25,7 @@ public class SellerService {
     @Value("${jwt.token.secret}")
     private String secretKey;
 
-    private long expiredTimeMs = 24 * 60 * 60 * 1000;
+    private final long expiredTimeMs = 24 * 60 * 60 * 1000;
 
     public SellerJoinResponse join(SellerJoinRequest request) {
         if (sellerRepository.existsByBusinessRegNum(request.getBusinessRegNum())) {
@@ -51,7 +51,8 @@ public class SellerService {
             throw new AppException(ErrorCode.INVALID_PASSWORD);
         }
 
-        String token = JwtTokenUtils.createToken(seller.getUsername(), "SELLER", secretKey, expiredTimeMs);
+        String token = JwtTokenUtils.createToken(seller.getUsername(), seller.getUserRole().getValue(),
+                secretKey, expiredTimeMs);
         return new SellerLoginResponse(token);
     }
 
@@ -67,7 +68,7 @@ public class SellerService {
 
         // 바꾸려는 이메일과 같은 이메일이 DB에 없는지 확인
         sellerRepository.findByUsername(request.getEmail())
-                .filter(existingSeller -> existingSeller.getId() != seller.getId())
+                .filter(existingSeller -> !existingSeller.getId().equals(seller.getId()))
                 .ifPresent(duplicateEmail -> {
                     throw new AppException(ErrorCode.DUPLICATE_EMAIL);
                 });
@@ -107,7 +108,7 @@ public class SellerService {
 
     private void checkIfUsernameIsUnique(Seller seller, String newUsername) {
         sellerRepository.findByUsername(newUsername)
-                .filter(existingUser -> existingUser.getId() != seller.getId())
+                .filter(existingUser -> !existingUser.getId().equals(seller.getId()))
                 .ifPresent((duplicateUsername -> {
                     throw new AppException(ErrorCode.DUPLICATE_USERNAME);
                 }));

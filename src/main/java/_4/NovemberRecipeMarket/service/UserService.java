@@ -67,7 +67,7 @@ public class UserService {
             throw new AppException(ErrorCode.INVALID_PASSWORD);
         }
 
-        return JwtTokenUtils.createToken(username,"USER", secretKey, expiredTimeMs);
+        return JwtTokenUtils.createToken(username,user.getUserRole().getValue(), secretKey, expiredTimeMs);
     }
 
     // update user
@@ -79,7 +79,7 @@ public class UserService {
 
         // email로 찾은 유저가 로그인 한 유저면 에외 발생시키지 않도록 하기
         userRepository.findByEmail(updateRequest.getEmail())
-                .filter(existingUser -> existingUser.getId() != user.getId())
+                .filter(existingUser -> !existingUser.getId().equals(user.getId()))
                 .ifPresent(duplicateUser -> {
                     throw new AppException(ErrorCode.DUPLICATE_EMAIL);
                 });
