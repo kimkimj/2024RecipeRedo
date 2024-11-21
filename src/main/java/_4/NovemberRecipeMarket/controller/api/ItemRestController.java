@@ -52,4 +52,10 @@ public class ItemRestController {
         Page<ItemGetResponse> allItemsBySeller = itemService.getAllItemsBySeller(sellerId, pageable);
         return Response.success(allItemsBySeller);
     }
+
+    @GetMapping("/items/list")
+    public Response<Page<ItemGetResponse>> getAllItems(Pageable pageable) {
+        Page<ItemGetResponse> itemGetResponses = itemService.getAllItems(pageable);
+        return Response.success(itemGetResponses);
+    }
 }

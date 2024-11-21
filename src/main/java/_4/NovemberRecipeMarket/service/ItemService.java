@@ -60,6 +60,11 @@ public class ItemService {
         return itemRepository.findAllBySeller(seller, pageable).map(this::toItemResponseForList);
     }
 
+    @Transactional(readOnly = true)
+    public Page<ItemGetResponse> getAllItems(Pageable pageable) {
+        return itemRepository.findAll(pageable).map(this::toItemResponseForList);
+    }
+
     private ItemGetResponse toItemResponseForList(Item item) {
         return new ItemGetResponse(item.getId(), item.getItemName(), item.getPrice(),
                 item.getStock());
