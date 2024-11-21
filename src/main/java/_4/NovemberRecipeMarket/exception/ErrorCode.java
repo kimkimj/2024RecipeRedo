@@ -23,12 +23,20 @@ public enum ErrorCode {
 
     // item
     ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다"),
+    NOT_ENOUGH_STOCK(HttpStatus.CONFLICT, "재고가 충분하지 않습니다."),
+    OUT_OF_STOCK(HttpStatus.CONFLICT, "품절된 상품입니다."),
 
     // recipe
     RECIPE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 레시피입니다."),
 
     // recipe item
-    RECIPE_ITEM_DOES_NOT_EXIST(HttpStatus.NOT_FOUND, "레시피의 재료에 등록되지 않은 재료입니다.");
+    RECIPE_ITEM_DOES_NOT_EXIST(HttpStatus.NOT_FOUND, "레시피의 재료에 등록되지 않은 재료입니다."),
+
+    //cart
+    CART_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 장바구니 입니다."),
+
+    CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "장바구니에 존재하지 않는 상품입니다."),
+    INVALID_QUANTITY(HttpStatus.CONFLICT, "0 이상의 수량만 가능합니다.");
 
 
     private HttpStatus httpStatus;
