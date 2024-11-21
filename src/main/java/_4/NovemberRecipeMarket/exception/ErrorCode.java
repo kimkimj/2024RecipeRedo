@@ -22,7 +22,13 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 리뷰입니다."),
 
     // item
-    ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다");
+    ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다"),
+
+    // recipe
+    RECIPE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 레시피입니다."),
+
+    // recipe item
+    RECIPE_ITEM_DOES_NOT_EXIST(HttpStatus.NOT_FOUND, "레시피의 재료에 등록되지 않은 재료입니다.");
 
 
     private HttpStatus httpStatus;

@@ -42,23 +42,23 @@ public class SecurityConfig {
     private final String[] POST_PERMIT = {
             "/api/v1/users/join",
             "/api/v1/users/login",
-            "/api/v1/seller/login",
-            "/api/v1/seller/join",
+            "/api/v1/sellers/login",
+            "/api/v1/sellers/join",
 
             // ui
             "/login",
             "/join",
             "/users/join",
             "/users/login",
-            "/seller/join",
-            "/seller/login"
+            "/sellers/join",
+            "/sellers/login"
     };
 
     private final String[] GET_AUTHENTICATED ={
             "/users/my",
             "users/my/**",
             "/users/logout",
-            "/seller/my/**"
+            "/sellers/my/**"
     };
 
     @Bean
@@ -83,7 +83,7 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         httpSecurity
-                .addFilterBefore(new JwtTokenFilter(secretKey, jwtTokenUtils, userService, sellerService),
+                .addFilterBefore(new JwtTokenFilter(secretKey, jwtTokenUtils),
                         UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(), JwtTokenFilter.class);
 
