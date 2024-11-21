@@ -1,9 +1,5 @@
 package _4.NovemberRecipeMarket.security;
 
-import _4.NovemberRecipeMarket.domain.dto.seller.SellerResponse;
-import _4.NovemberRecipeMarket.domain.dto.user.UserResponse;
-import _4.NovemberRecipeMarket.service.SellerService;
-import _4.NovemberRecipeMarket.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -26,8 +22,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final String secretKey;
     private final JwtTokenUtils jwtTokenUtils;
-    private final UserService userService;
-    private final SellerService sellerService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -35,7 +29,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         Cookie[] cookies = request.getCookies();
 
         try {
-            for (Cookie cookie: cookies) {
+            for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("token")) {
                     token = cookie.getValue();
                     log.info("token retrieved");
@@ -49,7 +43,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         if (token == null || token.equals("deleted")) {
             filterChain.doFilter(request, response);
-            log.info("token deleted");
+            return;
+        }
+
+        //토큰만료 check
+        if (jwtTokenUtils.isExpired(token, secretKey)) {
+            filterChain.doFilter(request, response);
             return;
         }
 
