@@ -5,10 +5,12 @@ import _4.NovemberRecipeMarket.domain.dto.review.ReviewDeleteResponse;
 import _4.NovemberRecipeMarket.domain.dto.review.ReviewRequest;
 import _4.NovemberRecipeMarket.domain.dto.review.ReviewResponse;
 import _4.NovemberRecipeMarket.domain.dto.review.ReviewResponseForList;
+import _4.NovemberRecipeMarket.domain.entity.Recipe;
 import _4.NovemberRecipeMarket.domain.entity.Review;
 import _4.NovemberRecipeMarket.domain.entity.User;
 import _4.NovemberRecipeMarket.exception.AppException;
 import _4.NovemberRecipeMarket.exception.ErrorCode;
+import _4.NovemberRecipeMarket.repository.RecipeRepository;
 import _4.NovemberRecipeMarket.repository.ReviewRepository;
 import _4.NovemberRecipeMarket.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +24,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class ReviewService {
+    private final RecipeRepository recipeRepository;
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
 
-    public ReviewResponse createReview(String username, ReviewRequest request) {
+    public ReviewResponse createReview(Long recipeId, String username, ReviewRequest request) {
+        Recipe recipe = validateRecipeById(recipeId);
         User author = validateUserByUsername(username);
-        Review review = new Review(author, request.getTitle(), request.getContent());
+        Review review = new Review(recipe, author, request.getTitle(), request.getContent());
         reviewRepository.save(review);
         return new ReviewResponse(review.getId(), username, review.getTitle(), review.getContent(),
-                "리뷰가 등록되었습니다.");
+                review.getCreatedDate(), "댓글이 등록되었습니다.");
     }
 
     public ReviewResponse updateReview(Long reviewId, String username, ReviewRequest request){
@@ -38,7 +42,7 @@ public class ReviewService {
         Review review = checkIfAuthor(reviewId, author);
         review.updateReview(request.getTitle(), request.getContent());
         return new ReviewResponse(review.getId(), review.getAuthor().getUsername(), review.getTitle(),
-                review.getContent(), "리뷰가 수정되었습니다.");
+                review.getContent(), review.getCreatedDate(), "댓글이 수정되었습니다.");
     }
 
     public ReviewDeleteResponse deleteReview(Long reviewId, String username) {
@@ -53,15 +57,27 @@ public class ReviewService {
     public Page<ReviewResponseForList> getAllReviewsByUser(Long userId, String username, Pageable pageable) {
         User author = checkForPermission(userId, username);
         Page<Review> reviews = reviewRepository.findAllByAuthor(author, pageable);
-        return reviews.map(this::toReviewResponse);
+        return reviews.map(this::toReviewResponseForList);
     }
 
-    private ReviewResponseForList toReviewResponse(Review review) {
+    public Page<ReviewResponseForList> getAllReviewsByRecipe(Long recipeId, Pageable pageable) {
+        Recipe recipe = validateRecipeById(recipeId);
+        Page<Review> reviews = reviewRepository.findAllByRecipe(recipe, pageable);
+        return reviews.map(this::toReviewResponseForList);
+    }
+
+    private ReviewResponseForList toReviewResponseForList(Review review) {
         return new ReviewResponseForList(
                 review.getId(),
                 review.getAuthor().getUsername(),
                 review.getTitle(),
-                review.getContent());
+                review.getContent(),
+                review.getCreatedDate());
+    }
+
+    private Recipe validateRecipeById(Long recipeId) {
+        return recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new AppException(ErrorCode.RECIPE_NOT_FOUND));
     }
 
     private Review checkIfAuthor(Long reviewId, User user) {

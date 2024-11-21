@@ -14,12 +14,17 @@ public class Review extends BaseEntity{
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "recipe_id")
+    private Recipe recipe;
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User author;
     private String title;
     private String content;
 
-    public Review(User author, String title, String content) {
+    public Review(Recipe recipe, User author, String title, String content) {
+        this.recipe = recipe;
         this.author = author;
         this.title = title;
         this.content = content;
