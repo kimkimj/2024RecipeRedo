@@ -2,6 +2,7 @@ package _4.NovemberRecipeMarket.config;
 
 import _4.NovemberRecipeMarket.domain.dto.Response;
 import _4.NovemberRecipeMarket.exception.ErrorCode;
+import _4.NovemberRecipeMarket.exception.ErrorResponse;
 import _4.NovemberRecipeMarket.security.JwtExceptionFilter;
 import _4.NovemberRecipeMarket.security.JwtTokenFilter;
 import _4.NovemberRecipeMarket.security.JwtTokenUtils;
@@ -115,7 +116,7 @@ public class SecurityConfig {
         response.setStatus(errorCode.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(response.getWriter(), Response.error(errorCode.getMessage()));
+        objectMapper.writeValue(response.getWriter(), Response.error("ERROR", new ErrorResponse(errorCode)));
     }
 
 }

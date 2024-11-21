@@ -1,7 +1,7 @@
 package _4.NovemberRecipeMarket.security;
 
-import _4.NovemberRecipeMarket.domain.dto.Response;
 import _4.NovemberRecipeMarket.exception.ErrorCode;
+import _4.NovemberRecipeMarket.exception.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -35,7 +35,10 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         response.setCharacterEncoding("UTF-8");
         response.setStatus(errorCode.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+        ErrorResponse errorResponse = new ErrorResponse(errorCode);
+
         ObjectMapper objectMapper = new ObjectMapper();
-        response.getWriter().write(objectMapper.writeValueAsString(Response.error(errorCode.getMessage())));
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 }
