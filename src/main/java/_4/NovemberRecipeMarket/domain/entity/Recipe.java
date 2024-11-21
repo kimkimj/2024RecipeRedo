@@ -36,10 +36,9 @@ public class Recipe extends BaseEntity{
     private List<Review> reviews = new ArrayList<>();
 
     @Column(columnDefinition = "integer default 0", nullable = false)
-    private Integer viewCount;
+    private int viewCount;
 
-    @Column(columnDefinition = "integer default 0", nullable = false)
-    private Integer likeCount;
+    private int likeCount;
 
     public Recipe(User author, String title, String content) {
         this.author = author;
@@ -56,6 +55,19 @@ public class Recipe extends BaseEntity{
         this.ingredients.addAll(ingredients);
     }
 
+    public void decreaseLike() {
+        likeCount--;
+    }
+
+    public void increaseLike() {
+        likeCount++;
+    }
+
+    public void increaseViewCount() {
+        viewCount++;
+    }
+
+    // for creating recipe
     public void setIngredients(List<RecipeItem> ingredients) {
         this.ingredients = ingredients;
     }

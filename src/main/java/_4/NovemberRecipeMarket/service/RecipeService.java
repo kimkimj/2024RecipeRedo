@@ -9,6 +9,7 @@ import _4.NovemberRecipeMarket.domain.entity.*;
 import _4.NovemberRecipeMarket.exception.AppException;
 import _4.NovemberRecipeMarket.exception.ErrorCode;
 import _4.NovemberRecipeMarket.repository.ItemRepository;
+import _4.NovemberRecipeMarket.repository.LikeRepository;
 import _4.NovemberRecipeMarket.repository.RecipeRepository;
 import _4.NovemberRecipeMarket.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +29,11 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
+    private final LikeRepository likeRepository;
 
     public RecipeGetResponse getRecipeById(Long recipeId) {
         Recipe recipe = validateRecipeById(recipeId);
+        recipe.increaseViewCount();
         return toRecipeGetResponse(recipe);
     }
 
@@ -75,6 +78,30 @@ public class RecipeService {
         User author = validateUserById(userId);
         return recipeRepository.findAllByAuthor(author,pageable)
                 .map(this::toRecipeGetResponseForList);
+    }
+
+    // 좋아요
+    public String pushLike(Long recipeId, String username) {
+        User user = validateUserByUsername(username);
+        Recipe recipe = validateRecipeById(recipeId);
+
+        Optional<Like> optionalLike = likeRepository.findByRecipeAndUser(recipe, user);
+        if (optionalLike.isEmpty()) {
+            Like like = new Like(user, recipe);
+            likeRepository.save(like);
+            recipe.increaseLike();
+            return "좋아요를 눌렀습니다.";
+        }
+        Long likeId = optionalLike.get().getId();
+        likeRepository.delete(optionalLike.get());
+        recipe.decreaseLike();
+        return "좋아요를 취소했습니다.";
+    }
+
+    @Transactional(readOnly = true)
+    public int getLikeCount(Long recipeId) {
+        Recipe recipe = validateRecipeById(recipeId);
+        return likeRepository.countByRecipe(recipe);
     }
 
     // List<RecipeItem> -> List<RecipeItemGetReponse>

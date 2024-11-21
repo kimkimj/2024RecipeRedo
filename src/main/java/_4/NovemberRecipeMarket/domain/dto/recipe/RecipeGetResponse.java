@@ -28,4 +28,5 @@ public class RecipeGetResponse {
     private Integer likeCount;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
+
 }

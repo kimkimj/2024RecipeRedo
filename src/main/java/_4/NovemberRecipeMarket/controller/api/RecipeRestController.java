@@ -61,4 +61,15 @@ public class RecipeRestController {
         return Response.success(recipeList);
     }
 
+    @PostMapping("/{recipeId}/likes")
+    public Response<String> pushLike(@PathVariable Long recipeId, Authentication authentication) {
+        String result = recipeService.pushLike(recipeId, authentication.getName());
+        return Response.success(result);
+    }
+
+    @GetMapping("/{recipeId}/likes")
+    public Response<Integer> getLikes(@PathVariable Long recipeId) {
+        int likeCount = recipeService.getLikeCount(recipeId);
+        return Response.success(likeCount);
+    }
 }

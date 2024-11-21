@@ -107,8 +107,6 @@ public class UserService {
         if (!user.getUsername().equals(username) || user.getUserRole().equals(UserRole.ADMIN)) {
             throw new AppException(ErrorCode.INVALID_PERMISSION);
         }
-
-        userRepository.delete(user);
         return new UserDeleteResponse(id);
     }
 
