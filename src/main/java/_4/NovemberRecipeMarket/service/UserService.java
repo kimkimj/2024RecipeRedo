@@ -124,7 +124,6 @@ public class UserService {
     }
 
     // username이 존재하는지 확인
-    @Transactional(readOnly = true)
     private User validateUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
@@ -132,7 +131,6 @@ public class UserService {
     }
 
     // user id가 존재하는지 확인
-    @Transactional(readOnly = true)
     private User validateUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
