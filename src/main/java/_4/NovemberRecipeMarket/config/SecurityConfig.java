@@ -44,6 +44,8 @@ public class SecurityConfig {
             "/api/v1/users/login",
             "/api/v1/sellers/login",
             "/api/v1/sellers/join",
+            "/api/v1/recipes/list",
+            "api/v1/items/list",
 
             // ui
             "/login",
